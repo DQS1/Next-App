@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '~/components/theme-provider';
 import './globals.css';
+import Header from '~/components/ui/header';
+import { Provider } from 'react-redux';
+import { store } from '~/redux/store';
 
 const inter = Inter({
   subsets: ['vietnamese']
@@ -26,6 +29,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <Header />
           {children}
         </ThemeProvider>
       </body>
