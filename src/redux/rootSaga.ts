@@ -1,6 +1,7 @@
 import { all } from 'redux-saga/effects';
-import { registerWatcher } from '~/features/register/registerSaga';
+import { authWatcher } from '~/features/auth/authSaga';
+import { userWatcher } from '~/features/user/userSaga';
 
 export function* rootSaga() {
-  yield all([...registerWatcher]);
+  yield all([, ...authWatcher, ...userWatcher]);
 }

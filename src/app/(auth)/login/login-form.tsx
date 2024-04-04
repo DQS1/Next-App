@@ -4,7 +4,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { Button } from '~/components/ui/button';
 import {
   Form,
@@ -18,43 +17,40 @@ import { Input } from '~/components/ui/input';
 import { authAction } from '~/features/auth/authSlice';
 import { useAppDispatch } from '~/hooks/useAppDispatch';
 import { useAppSelector } from '~/hooks/useAppSelector';
+import { clientSessionToken } from '~/lib/https';
 import { RootState } from '~/redux/store';
-import {
-  RegisterBody,
-  RegisterBodyType
-} from '~/schemaValidations/auth.schema';
+import { LoginBody, LoginBodyType } from '~/schemaValidations/auth.schema';
 
-function RegisterForm() {
+function LoginForm() {
   const router = useRouter();
-  const dispatch = useAppDispatch();
 
+  const dispatch = useAppDispatch();
   const response: any = useAppSelector(
-    (state: RootState) => state?.auth?.registerAccountResponse
+    (state: RootState) => state?.auth?.LoginResponse
   );
 
-  const form = useForm<RegisterBodyType>({
-    resolver: zodResolver(RegisterBody),
-    defaultValues: {
-      name: '',
-      email: '',
-      password: '',
-      confirmPassword: ''
-    }
-  });
-
   const handleError = () => {
-    const error = response?.errors.slice(0, 1)[0];
-    console.log('🚀 ~ handleError ~ error:', error);
-    if (error) {
-      form.setError('email', {
-        type: 'server',
-        message: error.message
+    const errors = response?.errors;
+    if (errors) {
+      errors.forEach((error: any) => {
+        form.setError(error.field as 'email' | 'password', {
+          type: 'server',
+          message: error.message
+        });
       });
     }
   };
 
+  const form = useForm<LoginBodyType>({
+    resolver: zodResolver(LoginBody),
+    defaultValues: {
+      email: '',
+      password: ''
+    }
+  });
+
   // 2. Define a submit handler.
-  async function onSubmit(values: z.infer<typeof RegisterBody>) {
+  async function onSubmit(values: LoginBodyType) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     const payload = {
@@ -63,7 +59,7 @@ function RegisterForm() {
         router.push('/user');
       }
     };
-    dispatch(authAction.registerAccount(payload));
+    dispatch(authAction.login(payload));
   }
 
   useEffect(() => {
@@ -77,19 +73,6 @@ function RegisterForm() {
         className=' w-full max-w-[500px] space-y-6'
         noValidate
       >
-        <FormField
-          control={form.control}
-          name='name'
-          render={({ field }) => (
-            <FormItem className='relative'>
-              <FormLabel className='text-[#313624]'>Tên</FormLabel>
-              <FormControl>
-                <Input type='text' {...field} />
-              </FormControl>
-              <FormMessage className='absolute bottom-[-22px]' />
-            </FormItem>
-          )}
-        />
         <FormField
           control={form.control}
           name='email'
@@ -116,25 +99,12 @@ function RegisterForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name='confirmPassword'
-          render={({ field }) => (
-            <FormItem className='relative'>
-              <FormLabel className='text-[#313624]'>ConfirmPassword</FormLabel>
-              <FormControl>
-                <Input type='password' {...field} />
-              </FormControl>
-              <FormMessage className='absolute bottom-[-22px]' />
-            </FormItem>
-          )}
-        />
         <Button type='submit' className='!mt-8 w-full'>
-          Đăng kí
+          Đăng nhập
         </Button>
       </form>
     </Form>
   );
 }
 
-export default RegisterForm;
+export default LoginForm;

@@ -3,8 +3,10 @@ import { Inter } from 'next/font/google';
 import { ThemeProvider } from '~/components/theme-provider';
 import './globals.css';
 import Header from '~/components/ui/header';
-import { Provider } from 'react-redux';
-import { store } from '~/redux/store';
+import { Toaster } from '~/components/ui/toaster';
+import ReduxProvider from '~/redux/redux-provider';
+import { cookies } from 'next/headers';
+import AppProvider from '~/app/AppProvider';
 
 const inter = Inter({
   subsets: ['vietnamese']
@@ -20,6 +22,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = cookies();
+  const sessionToken = cookieStore.get('sessionToken');
   return (
     <html lang='en' suppressHydrationWarning>
       <body className={inter.className}>
@@ -29,8 +33,13 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Header />
-          {children}
+          <Toaster />
+          <ReduxProvider>
+            <Header />
+            <AppProvider inititalSessionToken={sessionToken?.value}>
+              {children}
+            </AppProvider>
+          </ReduxProvider>
         </ThemeProvider>
       </body>
     </html>
