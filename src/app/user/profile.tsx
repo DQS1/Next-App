@@ -5,6 +5,7 @@ import { userAction } from '~/features/user/userSlice';
 import { useAppDispatch } from '~/hooks/useAppDispatch';
 import { useAppSelector } from '~/hooks/useAppSelector';
 import { RootState } from '~/redux/store';
+import { handleErrorApi } from '~/lib/utils';
 
 function Profile() {
   const dispatch = useAppDispatch();

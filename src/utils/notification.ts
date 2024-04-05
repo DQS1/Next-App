@@ -2,7 +2,7 @@
 import { toast } from '~/components/ui/use-toast';
 
 const notificationProps = {
-  duration: 5000
+  duration: 3000
 };
 
 export const showSuccessNotification = (message: string) => {

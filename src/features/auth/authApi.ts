@@ -4,6 +4,7 @@ import {
   LoginBodyType,
   RegisterBodyType
 } from '~/schemaValidations/auth.schema';
+import { MessageResType } from '~/schemaValidations/common.schema';
 
 type LoginData = {
   token: string;
@@ -12,7 +13,6 @@ type LoginData = {
 
 const authApi = {
   loginAccount: async (payload: LoginBodyType) => {
-    console.log('🚀 ~ loginAccount: ~ payload:', payload);
     const url = `/auth/login`;
     const response = await http.post(url, payload);
     return response;
@@ -30,6 +30,30 @@ const authApi = {
   registerAccount: async (payload: RegisterBodyType) => {
     const url = `/auth/register`;
     const response = await http.post<RegisterBodyType>(url, payload);
+    return response;
+  },
+  logoutFromNextServerToServer: async (payload: string) => {
+    const url = `/auth/logout`;
+    const response = await http.post<MessageResType>(
+      url,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${payload}`
+        }
+      }
+    );
+    return response;
+  },
+  logoutFromNextClientToNextServer: async () => {
+    const url = '/api/auth/logout';
+    const response = await http.post<MessageResType>(
+      url,
+      {},
+      {
+        baseUrl: ''
+      }
+    );
     return response;
   }
 };

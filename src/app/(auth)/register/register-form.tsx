@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { ReloadIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -18,6 +19,7 @@ import { Input } from '~/components/ui/input';
 import { authAction } from '~/features/auth/authSlice';
 import { useAppDispatch } from '~/hooks/useAppDispatch';
 import { useAppSelector } from '~/hooks/useAppSelector';
+import { handleErrorApi } from '~/lib/utils';
 import { RootState } from '~/redux/store';
 import {
   RegisterBody,
@@ -30,6 +32,10 @@ function RegisterForm() {
 
   const response: any = useAppSelector(
     (state: RootState) => state?.auth?.registerAccountResponse
+  );
+
+  const loading = useAppSelector(
+    (state: RootState) => state?.auth?.registerAccountLoading
   );
 
   const form = useForm<RegisterBodyType>({
@@ -67,7 +73,10 @@ function RegisterForm() {
   }
 
   useEffect(() => {
-    handleError();
+    handleErrorApi({
+      error: response,
+      setError: form.setError
+    });
   }, [response]);
 
   return (
@@ -129,7 +138,8 @@ function RegisterForm() {
             </FormItem>
           )}
         />
-        <Button type='submit' className='!mt-8 w-full'>
+        <Button disabled={loading} type='submit' className='!mt-8 w-full'>
+          {loading && <ReloadIcon className='mr-2 h-4 w-4 animate-spin' />}
           Đăng kí
         </Button>
       </form>

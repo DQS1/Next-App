@@ -4,6 +4,7 @@
 import { call, put, takeEvery } from 'redux-saga/effects';
 import { userApi } from '~/features/user/userApi';
 import { userAction } from '~/features/user/userSlice';
+import { showErrorNotification } from '~/utils/notification';
 
 type ActionType = {
   type: string;
@@ -15,7 +16,8 @@ export function* getUserWorker(): Generator {
     const response: any = yield call(userApi.getUserClient);
     yield put(userAction.getUserSuccess(response?.payload?.data));
   } catch (error: any) {
-    yield put(userAction.getUserFailure(error?.response?.data));
+    yield put(userAction.getUserFailure());
+    showErrorNotification('Không nhận được thông tin người dùng');
     console.log(error);
   }
 }

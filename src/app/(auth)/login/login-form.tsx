@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { ReloadIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -17,7 +18,7 @@ import { Input } from '~/components/ui/input';
 import { authAction } from '~/features/auth/authSlice';
 import { useAppDispatch } from '~/hooks/useAppDispatch';
 import { useAppSelector } from '~/hooks/useAppSelector';
-import { clientSessionToken } from '~/lib/https';
+import { handleErrorApi } from '~/lib/utils';
 import { RootState } from '~/redux/store';
 import { LoginBody, LoginBodyType } from '~/schemaValidations/auth.schema';
 
@@ -29,6 +30,9 @@ function LoginForm() {
     (state: RootState) => state?.auth?.LoginResponse
   );
 
+  const loading = useAppSelector(
+    (state: RootState) => state?.auth?.loginLoading
+  );
   const handleError = () => {
     const errors = response?.errors;
     if (errors) {
@@ -63,7 +67,10 @@ function LoginForm() {
   }
 
   useEffect(() => {
-    handleError();
+    handleErrorApi({
+      error: response,
+      setError: form.setError
+    });
   }, [response]);
 
   return (
@@ -99,7 +106,8 @@ function LoginForm() {
             </FormItem>
           )}
         />
-        <Button type='submit' className='!mt-8 w-full'>
+        <Button disabled={loading} type='submit' className='!mt-8 w-full'>
+          {loading && <ReloadIcon className='mr-2 h-4 w-4 animate-spin' />}
           Đăng nhập
         </Button>
       </form>

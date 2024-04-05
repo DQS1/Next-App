@@ -33,8 +33,8 @@ export function* loginWorker({ payload }: ActionType): Generator {
       payload.onSuccess();
     }
   } catch (error: any) {
-    yield put(authAction.loginFailure(error?.payload));
-    console.log(error?.payload);
+    yield put(authAction.loginFailure(error));
+    console.log(error);
   }
 }
 
@@ -65,7 +65,8 @@ export function* registerAccountWorker({ payload }: ActionType): Generator {
       payload.onSuccess();
     }
   } catch (error: any) {
-    yield put(authAction.registerAccountFailure(error?.payload));
+    console.log('🚀 ~ function*registerAccountWorker ~ error:', error);
+    yield put(authAction.registerAccountFailure(error));
     console.log(error);
   }
 }
