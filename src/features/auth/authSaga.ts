@@ -12,14 +12,9 @@ type ActionType = {
   payload: any;
 };
 
-type ErrorType = {
-  status: number;
-  payload: any;
-};
-
-type loginToken = {
+type loginAuth = {
   token: string;
-  expiration: string;
+  expiresAt: string;
 };
 
 export function* loginWorker({ payload }: ActionType): Generator {
@@ -40,15 +35,12 @@ export function* loginWorker({ payload }: ActionType): Generator {
 
 export function* setTokenWorker(payload: any): Generator {
   try {
-    const loginToken: loginToken = {
+    const loginAuth: loginAuth = {
       token: payload?.payload?.data?.token,
-      expiration: payload?.payload?.data?.expiresAt
+      expiresAt: payload?.payload?.data?.expiresAt
     };
-    console.log(
-      '🚀 ~ function*setTokenWorker ~ loginToken?.token:',
-      loginToken?.token
-    );
-    yield call(authApi.setToken, loginToken);
+
+    yield call(authApi.auth, loginAuth);
   } catch (error: any) {
     console.log(error);
   }
@@ -65,7 +57,6 @@ export function* registerAccountWorker({ payload }: ActionType): Generator {
       payload.onSuccess();
     }
   } catch (error: any) {
-    console.log('🚀 ~ function*registerAccountWorker ~ error:', error);
     yield put(authAction.registerAccountFailure(error));
     console.log(error);
   }

@@ -48,17 +48,6 @@ function RegisterForm() {
     }
   });
 
-  const handleError = () => {
-    const error = response?.errors.slice(0, 1)[0];
-    console.log('🚀 ~ handleError ~ error:', error);
-    if (error) {
-      form.setError('email', {
-        type: 'server',
-        message: error.message
-      });
-    }
-  };
-
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof RegisterBody>) {
     // Do something with the form values.

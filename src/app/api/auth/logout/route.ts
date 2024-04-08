@@ -2,7 +2,23 @@ import { HttpError } from '~/lib/https';
 import { cookies } from 'next/headers';
 import { authApi } from '~/features/auth/authApi';
 
-export async function POST() {
+export async function POST(request: Request) {
+  const res = await request.json();
+  const force = res.force as boolean | undefined;
+  if (force) {
+    return Response.json(
+      {
+        message: 'Hết hạn phiên đăng nhập'
+      },
+      {
+        status: 200,
+        headers: {
+          'Set-Cookie': `sessionToken=; Path=/; HttpOnly; Max-Age=0`
+        }
+      }
+    );
+  }
+
   const cookieStore = cookies();
   const sessionToken = cookieStore.get('sessionToken');
   if (!sessionToken) {

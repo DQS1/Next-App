@@ -6,7 +6,8 @@ import Header from '~/components/ui/header';
 import { Toaster } from '~/components/ui/toaster';
 import ReduxProvider from '~/redux/redux-provider';
 import { cookies } from 'next/headers';
-import AppProvider from '~/app/AppProvider';
+import AppProvider from '~/app/app-provider';
+import SlideSession from '~/components/slide-session';
 
 const inter = Inter({
   subsets: ['vietnamese']
@@ -36,8 +37,9 @@ export default function RootLayout({
           <Toaster />
           <ReduxProvider>
             <Header />
-            <AppProvider inititalSessionToken={sessionToken?.value}>
+            <AppProvider initialSessionToken={sessionToken?.value}>
               {children}
+              <SlideSession />
             </AppProvider>
           </ReduxProvider>
         </ThemeProvider>

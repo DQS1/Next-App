@@ -1,7 +1,7 @@
-import { type ClassValue, clsx } from 'clsx';
+import { clsx, type ClassValue } from 'clsx';
+import jwt from 'jsonwebtoken';
 import { UseFormSetError } from 'react-hook-form';
 import { twMerge } from 'tailwind-merge';
-import { string } from 'zod';
 import { EntityError } from '~/lib/https';
 
 export function cn(...inputs: ClassValue[]) {
@@ -29,4 +29,8 @@ export const handleErrorApi = ({
 
 export const normalizePath = (path: string) => {
   return path.startsWith('/') ? path.slice(1) : path;
+};
+
+export const decodeJWT = <Payload = any>(token: string) => {
+  return jwt.decode(token) as Payload;
 };

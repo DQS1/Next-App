@@ -2,13 +2,14 @@
 import http from '~/lib/https';
 import {
   LoginBodyType,
-  RegisterBodyType
+  RegisterBodyType,
+  SlideSessionResType
 } from '~/schemaValidations/auth.schema';
 import { MessageResType } from '~/schemaValidations/common.schema';
 
 type LoginData = {
   token: string;
-  expiration: string;
+  expiresAt: string;
 };
 
 const authApi = {
@@ -17,10 +18,11 @@ const authApi = {
     const response = await http.post(url, payload);
     return response;
   },
-  setToken: async (payload: LoginData): Promise<any> => {
+  auth: async (payload: LoginData): Promise<any> => {
     const url = '/api/auth';
     const body = {
-      sessionToken: payload?.token
+      sessionToken: payload?.token,
+      expiresAt: payload?.expiresAt
     };
     const response = await http.post(url, body, {
       baseUrl: ''
@@ -45,9 +47,36 @@ const authApi = {
     );
     return response;
   },
-  logoutFromNextClientToNextServer: async () => {
+  logoutFromNextClientToNextServer: async (
+    force?: boolean | undefined,
+    signal?: AbortSignal | undefined
+  ) => {
     const url = '/api/auth/logout';
     const response = await http.post<MessageResType>(
+      url,
+      {
+        force
+      },
+      {
+        baseUrl: '',
+        signal
+      }
+    );
+    return response;
+  },
+  slideSessionFromNextServerToServer: (sessionToken: string) => {
+    const url = '/auth/slide-session';
+    const config = {
+      headers: {
+        Authorization: `Bearer ${sessionToken}`
+      }
+    };
+    const response = http.post<SlideSessionResType>(url, {}, config);
+    return response;
+  },
+  slideSessionFromNextClientToNextServer: () => {
+    const url = '/api/auth/slide-session';
+    const response = http.post<SlideSessionResType>(
       url,
       {},
       {

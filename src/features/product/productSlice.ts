@@ -14,8 +14,8 @@ const initialState: stateType = {
   updateUserLoading: false
 };
 
-const userSlice = createSlice({
-  name: 'user',
+const productSlice = createSlice({
+  name: 'product',
   initialState,
   reducers: {
     getUser(state) {
@@ -40,6 +40,6 @@ const userSlice = createSlice({
   }
 });
 
-const { actions, reducer } = userSlice;
+const { actions, reducer } = productSlice;
 
-export { actions as userAction, reducer as userReducer };
+export { actions as productAction, reducer as productReducer };

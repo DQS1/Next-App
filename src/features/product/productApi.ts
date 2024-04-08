@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AxiosResponse } from 'axios';
-import { axiosInstance } from '~/configs/axios.config';
 import http from '~/lib/https';
 import {
   AccountResType,
   UpdateMeBodyType
 } from '~/schemaValidations/account.schema';
 
-const userApi = {
+const productApi = {
   getUserClient: async () => {
     const url = `/account/me`;
     const response = await http.get<AccountResType>(url);
@@ -30,4 +28,4 @@ const userApi = {
   }
 };
 
-export { userApi };
+export { productApi };

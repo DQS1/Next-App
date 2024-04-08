@@ -1,10 +1,14 @@
 import { cookies } from 'next/headers';
-import Profile from '~/app/user/profile';
+import ProfileForm from '~/app/user/profile-form';
+import { userApi } from '~/features/user/userApi';
 
 async function userProfile() {
+  const cookiesStore = cookies();
+  const sessionToken = cookiesStore.get('sessionToken');
+  const result = await userApi.getUser(sessionToken?.value ?? '');
   return (
     <div>
-      <Profile />
+      <ProfileForm profile={result.payload.data} />
     </div>
   );
 }

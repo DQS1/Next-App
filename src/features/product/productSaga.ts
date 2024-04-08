@@ -41,7 +41,7 @@ export function* updateUserWorker({ payload }: ActionType): Generator {
   }
 }
 
-export const userWatcher = [
+export const productWatcher = [
   takeEvery(userAction.getUser, getUserWorker),
   takeEvery(userAction.updateUser, updateUserWorker)
 ];
